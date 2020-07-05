@@ -1,0 +1,21 @@
+html {
+  // TODO: Figure out how to override Bulma/Buefy's styles without using !important
+  overflow-y: hidden !important;
+}
+
+.section-title {
+	padding-bottom: 3rem;
+}
+
+//Router animation styles
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.3s;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}

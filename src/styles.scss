@@ -1,0 +1,5 @@
+@import './assets/styles/_all.scss';
+
+// Bulma & Buefy styles should be imported last
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
