@@ -20,7 +20,6 @@
 
 <script>
 export default {
-  name: "quotes",
   props: {
   },
   data: function() {
@@ -29,36 +28,41 @@ export default {
       quote: Object,
       similarQuote: Object,
       usedQuotes: [],
+      previousAuthor: String,
       allAuthorsQuotes: [],
       rating: 0,
     }
   },
   methods: {
     setRating: function (rating) {
+      // Track previous quotes
+      this.usedQuotes.push(this.quote);
+      this.previousAuthor = this.quote.author;
+
       // Set the rating
       this.rating = rating;
+
+      console.log('author: ', this.quote.author);
+      console.log('previous author: ', this.previousAuthor);
+
+      // Same author?
+      if (this.quote.author === this.previousAuthor) {
+      // Get all their quotes
+        this.$http.get(this.baseUrl).then(res => {
+          this.allAuthorsQuotes = res.body.filter(quote => quote.author === this.quote.author);
+          console.log('all quotes from this author: ', this.allAuthorsQuotes);
+        });
+      }
 
       // Post the vote
       this.$http.post(`${this.baseUrl}/vote`, {quoteId: this.quote.id, newVote: rating});
 
-      // Get all the author's quotes
-      this.$http.get(this.baseUrl).then(res => {
-        this.allAuthorsQuotes = res.body.filter(quote => quote.author === this.quote.author);
-        console.log('starting all quotes: ', this.allAuthorsQuotes);
-      });
-
       // If rated 4 or higher AND the author has multiple quotes
-      if (rating >= 4 && this.allAuthorsQuotes.length > 0) {
-        // TODO: Filter allAuthorsQuotes down into a single UNUSED quote and assign it to this.quotes
-        // Probably do that by removing any quote from allAuthorsQuotes that is also in usedQuotes
-        // this.allAuthorsQuotes = this.allAuthorsQuotes.filter(el => !this.usedQuotes.includes(el));
-        // console.log('ALL QUOTES: ', this.allAuthorsQuotes);
-        // console.log('REMAINING QUOTES: ', remainingQuotes);
-
-      } else {
+      if (rating >= 4 && this.allAuthorsQuotes.length > 1) {
+        console.log('get a similar quote');
+      } else if (rating < 4 || rating >= 4 && this.allAuthorsQuotes.length < 1) {
         this.$http.get('https://programming-quotes-api.herokuapp.com/quotes/random').then(res => {
           this.quote = res.body;
-          this.usedQuotes.push(this.quote);
         });
       }
     },
@@ -67,17 +71,7 @@ export default {
     console.log('Get a random quote');
     this.$http.get('https://programming-quotes-api.herokuapp.com/quotes/random').then(res => {
       this.quote = res.body;
-      console.log('FIRST QUOTE: ', this.quote);
-      this.usedQuotes.push(this.quote);
     });
   },
 };
 </script>
-
-<style scoped lang="scss">
-.is-flex-centered {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-</style>
