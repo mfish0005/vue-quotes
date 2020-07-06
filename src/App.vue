@@ -15,7 +15,6 @@ export default {
 	},
 	methods: {
 		beforeLeave(element) {
-			console.log(element);
 			this.prevHeight = getComputedStyle(element).height;
 		},
 		enter(element) {

@@ -7,6 +7,8 @@ import store from './store'
 import Buefy from 'buefy';
 import StarRating from 'vue-star-rating';
 Vue.component('star-rating', StarRating);
+import VueResource from 'vue-resource';
+Vue.use(VueResource);
 
 // STYLES
 import '@/styles.scss';
